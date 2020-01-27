@@ -11,9 +11,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "ts-node scripts/prebuild.ts && tsc --build tsconfig.build.json",
-    "release": "npm run build && ts-node scripts/release.ts",
-    "test": "eslint 'src/**/*.ts' && tsc --noEmit && jest"
+    "test": "yarn workspace practice-20200126-graphql-back test && yarn workspace practice-20200126-graphql-front test"
   },
   "workspaces": ["packages/*"],
   "dependencies": {},
