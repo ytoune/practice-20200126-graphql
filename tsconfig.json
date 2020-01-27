@@ -1,0 +1,9 @@
+{
+  "extends": "./base.tsconfig.jsonc",
+  "include": ["src/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "packages/back" },
+    { "path": "packages/front" }
+  ],
+}

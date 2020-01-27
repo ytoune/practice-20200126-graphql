@@ -1,0 +1,8 @@
+/node_modules
+/dist
+/.cache
+/.parcel-cache
+/packages/*/node_modules
+/packages/*/dist
+/packages/*/.cache
+/packages/*/.parcel-cache
