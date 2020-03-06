@@ -47,22 +47,39 @@ const state$ = action$.pipe(
 
 state$.subscribe()
 
+const handleError = (x: unknown) => {
+	console.error(x)
+	dispatch({ list: [], type: 'PATCH' })
+}
+
 const dispatch = (act: Action) => action$.next(act)
 const create = (name: string) => {
+	if (!name) return
 	dispatch({ type: 'PENDING' })
 	sdk
 		.create({ name, done: false })
 		.then(
 			r => r.createToDo && dispatch({ list: [r.createToDo], type: 'PATCH' }),
+			handleError,
 		)
 }
 
 const done = (id: number) => {
+	if (id < 1) return
 	dispatch({ type: 'PENDING' })
 	sdk
 		.done({ id })
-		.then(r => r.done && dispatch({ list: [r.done], type: 'PATCH' }))
+		.then(
+			r => r.done && dispatch({ list: [r.done], type: 'PATCH' }),
+			handleError,
+		)
 }
+
+const refresh = () => {
+	sdk.list().then(r => dispatch({ list: r.todos, type: 'SET' }), handleError)
+}
+
+let inited = false
 
 export const useToDos = () => {
 	const [todos, settodos] = useState<State>({ pending: true, list: [] })
@@ -71,7 +88,9 @@ export const useToDos = () => {
 		return () => p.unsubscribe()
 	}, [])
 	useEffect(() => {
-		sdk.list().then(r => dispatch({ list: r.todos, type: 'SET' }))
+		if (inited) return
+		inited = true
+		refresh()
 	}, [])
 
 	return {
@@ -79,5 +98,6 @@ export const useToDos = () => {
 		isPending: todos.pending,
 		create,
 		done,
+		refresh,
 	}
 }

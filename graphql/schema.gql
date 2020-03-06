@@ -1,10 +1,10 @@
 type Query {
   todos: [ToDo!]!
-  todo(id: Int): ToDo
+  todo(id: Int!): ToDo
 }
 type Mutation {
-  createToDo(name: String, done: Boolean): ToDo
-  done(id: Int): ToDo
+  createToDo(name: String!, done: Boolean): ToDo
+  done(id: Int!): ToDo
 }
 type ToDo {
   id: Int!
