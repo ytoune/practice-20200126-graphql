@@ -1,44 +1,38 @@
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import Koa from 'koa'
-import { ApolloServer, gql, IResolvers } from 'apollo-server-koa'
+import { ApolloServer, IResolvers } from 'apollo-server-koa'
+import { Resolvers } from './gen/graphql-resolver-types'
 import { todos } from './todos'
 
-const typeDefs = gql`
-	type Query {
-		todos: [ToDo]!
-		todo(id: Int): ToDo
-	}
-	type Mutation {
-		createToDo(name: String, done: Boolean): ToDo
-		done(id: Int): ToDo
-	}
-	type ToDo {
-		id: Int!
-		name: String!
-		done: Boolean!
-	}
-`
+const typeDefs = readFileSync(join(__dirname, 'gen/schema.gql'), 'utf-8')
 
 // Provide resolver functions for your schema fields
-const resolvers: IResolvers = {
+const resolvers: Resolvers = {
 	Query: {
 		todos: () => todos.list(),
-		todo: (parent, args) => {
-			return todos.find(t => t.id === args.id)
+		todo: (_, args) => {
+			return todos.find(t => t.id === args.id).then(r => r || null)
 		},
 	},
 	Mutation: {
-		createToDo: (parent, args) => {
+		createToDo: (_, args) => {
 			const { name, done } = args
-			return todos.create({ name, done })
+			if (name && null != done) return todos.create({ name, done })
+			throw new TypeError('name and done are required.')
 		},
-		done: (parent, args) => {
+		done: (_, args) => {
 			const { id } = args
-			return todos.update({ id, done: true })
+			if (id) return todos.update({ id, done: true }).then(r => r || null)
+			throw new TypeError('id is required.')
 		},
 	},
 }
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({
+	typeDefs,
+	resolvers: resolvers as IResolvers,
+})
 
 export const app = new Koa()
 server.applyMiddleware({ app })

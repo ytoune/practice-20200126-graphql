@@ -6,3 +6,4 @@
 /packages/*/dist
 /packages/*/.cache
 /packages/*/.parcel-cache
+/packages/*/src/gen

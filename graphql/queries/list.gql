@@ -1,0 +1,5 @@
+query list{
+  todos {
+    id, name, done
+  }
+}

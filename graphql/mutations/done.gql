@@ -1,0 +1,5 @@
+mutation done($id: Int!) {
+  done(id: $id) {
+    id, name, done
+  }
+}

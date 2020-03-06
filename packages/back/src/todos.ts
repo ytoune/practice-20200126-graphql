@@ -3,7 +3,7 @@ class Repo<Item extends { id: number }, Required extends keyof Item> {
 	private cur = 1
 	private readonly items: Item[] = []
 	constructor(private init: () => Omit<Item, 'id'>) {}
-	async list(): Promise<readonly Item[]> {
+	async list(): Promise<Item[]> {
 		return this.items
 	}
 	async find(fn: (i: Item) => boolean): Promise<Item | undefined> {

@@ -1,0 +1,5 @@
+mutation create($name: String!, $done: Boolean!) {
+  createToDo(name: $name, done: $done) {
+    id, name, done
+  }
+}

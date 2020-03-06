@@ -5,3 +5,4 @@
 /.parcel-cache
 /scripts/sandbox**
 /yarn-error.log*
+/src/gen

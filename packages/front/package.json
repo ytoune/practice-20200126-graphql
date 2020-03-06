@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "cross-fetch": "3.0.4",
+    "graphql-request": "1.8.2",
+    "graphql-tag": "2.10.3",
     "next": "9.2.1",
     "react": "16.12.0",
     "react-dom": "16.12.0",
@@ -42,9 +44,10 @@
     "node-sass": "4.13.1",
     "prettier": "1.19.1",
     "styled-jsx-plugin-sass": "1.0.0",
+    "ts-graphql-plugin": "1.10.2",
     "ts-jest": "25.0.0",
     "ts-node": "8.6.2",
-    "typescript": "3.7.5"
+    "typescript": "3.8.3"
   },
   "jest": {
     "transform": {

@@ -11,11 +11,22 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "codegen": "graphql-codegen --config codegen.yml && cp -f graphql/schema.gql packages/back/src/gen/schema.gql",
     "test": "yarn workspace practice-20200126-graphql-back test && yarn workspace practice-20200126-graphql-front test"
   },
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.12.2",
+    "@graphql-codegen/introspection": "1.12.2",
+    "@graphql-codegen/typescript": "1.12.2",
+    "@graphql-codegen/typescript-graphql-request": "1.12.2",
+    "@graphql-codegen/typescript-operations": "1.12.2",
+    "@graphql-codegen/typescript-resolvers": "1.12.2",
+    "graphql": "14.6.0"
+  },
   "jest": {
     "transform": {
       "^.+\\.(js|jsx|ts|tsx)$": "ts-jest"

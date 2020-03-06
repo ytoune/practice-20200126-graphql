@@ -18,9 +18,10 @@
   },
   "dependencies": {
     "apollo-server-koa": "2.9.16",
-    "graphql": "14.5.8"
+    "graphql": "14.6.0"
   },
   "devDependencies": {
+    "@playlyfe/gql": "2.6.2",
     "@types/fs-extra": "8.0.1",
     "@types/gh-pages": "2.0.1",
     "@types/jest": "24.9.1",
@@ -34,11 +35,12 @@
     "gh-pages": "2.2.0",
     "jest": "25.1.0",
     "prettier": "1.19.1",
+    "ts-graphql-plugin": "1.10.2",
     "ts-jest": "25.0.0",
     "ts-node": "8.6.2",
     "ts-node-dev": "1.0.0-pre.44",
     "tsconfig-paths": "3.9.0",
-    "typescript": "3.7.5"
+    "typescript": "3.8.3"
   },
   "jest": {
     "transform": {

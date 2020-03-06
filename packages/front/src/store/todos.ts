@@ -1,13 +1,12 @@
-import fetch from 'cross-fetch'
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Subject } from 'rxjs'
 import { scan, shareReplay } from 'rxjs/operators'
+import { GraphQLClient } from 'graphql-request'
+import { getSdk, ToDo as IToDo } from '~/gen/graphql-client-api'
 
-export type ToDo = {
-	id: number
-	name: string
-	done: boolean
-}
+const sdk = getSdk(new GraphQLClient('http://localhost:4000/graphql'))
+
+export type ToDo = Omit<IToDo, '__typename'>
 
 type State = {
 	pending: boolean
@@ -18,30 +17,6 @@ type Action =
 	| { type: 'PENDING' }
 	| { type: 'SET'; list: ToDo[] }
 	| { type: 'PATCH'; list: ToDo[] }
-
-const query = {
-	list: `
-		query {
-			todos {
-				id, name, done
-			}
-		}
-	`,
-	create: `
-		mutation Create($name: String!, $done: Boolean!) {
-			createToDo(name: $name, done: $done) {
-				id, name, done
-			}
-		}
-	`,
-	done: `
-		mutation Done($id: Int!) {
-			done(id: $id) {
-				id, name, done
-			}
-		}
-	`,
-} as const
 
 const action$ = new Subject<Action>()
 
@@ -75,30 +50,18 @@ state$.subscribe()
 const dispatch = (act: Action) => action$.next(act)
 const create = (name: string) => {
 	dispatch({ type: 'PENDING' })
-	fetch('//localhost:4000/graphql', {
-		method: 'post',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({
-			query: query.create,
-			variables: { name, done: false },
-		}),
-	})
-		.then(r => r.json())
-		.then(r => dispatch({ list: [r.data.createToDo], type: 'PATCH' }))
+	sdk
+		.create({ name, done: false })
+		.then(
+			r => r.createToDo && dispatch({ list: [r.createToDo], type: 'PATCH' }),
+		)
 }
 
 const done = (id: number) => {
 	dispatch({ type: 'PENDING' })
-	fetch('//localhost:4000/graphql', {
-		method: 'post',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({
-			query: query.done,
-			variables: { id },
-		}),
-	})
-		.then(r => r.json())
-		.then(r => dispatch({ list: [r.data.done], type: 'PATCH' }))
+	sdk
+		.done({ id })
+		.then(r => r.done && dispatch({ list: [r.done], type: 'PATCH' }))
 }
 
 export const useToDos = () => {
@@ -108,14 +71,9 @@ export const useToDos = () => {
 		return () => p.unsubscribe()
 	}, [])
 	useEffect(() => {
-		fetch('//localhost:4000/graphql', {
-			method: 'post',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({ query: query.list }),
-		})
-			.then(r => r.json())
-			.then(r => dispatch({ list: r.data.todos, type: 'SET' }))
+		sdk.list().then(r => dispatch({ list: r.todos, type: 'SET' }))
 	}, [])
+
 	return {
 		list: todos.list,
 		isPending: todos.pending,
