@@ -13,24 +13,24 @@ type State = {
 	list: ToDo[]
 }
 
-type Action =
+type Mutation =
 	| { type: 'PENDING' }
 	| { type: 'SET'; list: ToDo[] }
 	| { type: 'PATCH'; list: ToDo[] }
 
-const action$ = new Subject<Action>()
+const mutation$ = new Subject<Mutation>()
 
-const state$ = action$.pipe(
+const state$ = mutation$.pipe(
 	scan(
-		(state: State, action: Action) => {
-			switch (action.type) {
+		(state: State, mutation: Mutation) => {
+			switch (mutation.type) {
 				case 'PENDING':
 					return { ...state, pending: true }
 				case 'SET':
-					return { list: [...action.list], pending: false }
+					return { list: [...mutation.list], pending: false }
 				case 'PATCH': {
 					const list = [...state.list]
-					for (const i of action.list) {
+					for (const i of mutation.list) {
 						const x = list.map(i => i.id).indexOf(i.id)
 						~x ? (list[x] = i) : list.push(i)
 					}
@@ -49,34 +49,31 @@ state$.subscribe()
 
 const handleError = (x: unknown) => {
 	console.error(x)
-	dispatch({ list: [], type: 'PATCH' })
+	commit({ list: [], type: 'PATCH' })
 }
 
-const dispatch = (act: Action) => action$.next(act)
+const commit = (mut: Mutation) => mutation$.next(mut)
 const create = (name: string) => {
 	if (!name) return
-	dispatch({ type: 'PENDING' })
+	commit({ type: 'PENDING' })
 	sdk
 		.create({ name, done: false })
 		.then(
-			r => r.createToDo && dispatch({ list: [r.createToDo], type: 'PATCH' }),
+			r => r.createToDo && commit({ list: [r.createToDo], type: 'PATCH' }),
 			handleError,
 		)
 }
 
 const done = (id: number) => {
 	if (id < 1) return
-	dispatch({ type: 'PENDING' })
+	commit({ type: 'PENDING' })
 	sdk
 		.done({ id })
-		.then(
-			r => r.done && dispatch({ list: [r.done], type: 'PATCH' }),
-			handleError,
-		)
+		.then(r => r.done && commit({ list: [r.done], type: 'PATCH' }), handleError)
 }
 
 const refresh = () => {
-	sdk.list().then(r => dispatch({ list: r.todos, type: 'SET' }), handleError)
+	sdk.list().then(r => commit({ list: r.todos, type: 'SET' }), handleError)
 }
 
 let inited = false
