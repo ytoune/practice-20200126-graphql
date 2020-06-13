@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, memo } from 'react'
 import { useToDos } from '~/store/todos'
 import { ToDo } from '~/components/ToDo'
 
-export const ToDoList = () => {
+export const ToDoList = memo(() => {
 	const [checked, set] = useState(false)
 	const onChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,4 +41,4 @@ export const ToDoList = () => {
 			`}</style>
 		</>
 	)
-}
+})

@@ -1,4 +1,4 @@
-import { useReducer, useCallback } from 'react'
+import { useReducer, useCallback, memo } from 'react'
 import { useToDos } from '~/store/todos'
 
 const useForm = () => {
@@ -44,15 +44,15 @@ const useForm = () => {
 	}
 }
 
-export const CreateToDo = () => {
+export const CreateToDo = memo(() => {
 	const todos = useToDos()
 	const f = useForm()
-	return todos.isPending ? (
-		<p>loading...</p>
-	) : (
+	return (
 		<form onSubmit={f.onSubmit}>
 			<input type="text" value={f.name} onChange={f.onChange} />
-			<button type="submit">create</button>
+			<button disabled={todos.isPending} type="submit">
+				create
+			</button>
 		</form>
 	)
-}
+})

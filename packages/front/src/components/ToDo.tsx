@@ -1,7 +1,7 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useToDos, ToDo as IToDo } from '~/store/todos'
 
-export const ToDo = ({ id }: { id: IToDo['id'] }) => {
+export const ToDo = memo(({ id }: { id: IToDo['id'] }) => {
 	const todos = useToDos()
 	const onChange = useCallback(() => {
 		todos.done(id)
@@ -23,4 +23,4 @@ export const ToDo = ({ id }: { id: IToDo['id'] }) => {
 			`}</style>
 		</>
 	)
-}
+})

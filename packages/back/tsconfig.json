@@ -1,7 +1,14 @@
 {
   "extends": "../../base.tsconfig.jsonc",
   "include": ["src/**/*", "scripts/**/*"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.test.ts",
+    "packages/*/node_modules",
+    "packages/*/dist",
+    "packages/*/src/**/*.test.ts"
+  ],
   "compilerOptions": {
     "baseUrl": "src",
     "paths": { "~/*": ["*"] }
