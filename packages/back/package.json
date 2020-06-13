@@ -17,7 +17,7 @@
     "test": "eslint 'src/**/*.ts' && tsc --noEmit && jest"
   },
   "dependencies": {
-    "apollo-server-koa": "2.9.16",
+    "apollo-server-koa": "2.14.2",
     "graphql": "14.6.0"
   },
   "devDependencies": {
